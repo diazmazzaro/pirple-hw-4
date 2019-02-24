@@ -1,4 +1,4 @@
-# pirple-hw-4
+# pirple-hw-4 ![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/public/logo-min.png?raw=true "landing") 
 
 Pirple Homework Assignment #4
 ***
