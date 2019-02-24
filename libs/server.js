@@ -134,7 +134,7 @@ server.init = function(config){
 
     // Start the HTTP server
     server.httpServer.listen(config.httpPort,function(){
-      debug('The \x1b[32m\x1b[1mHTTP\x1b[0m server is running on port \x1b[34m\x1b[1m'+config.httpPort+'\x1b[0m');
+      console.log('The \x1b[32m\x1b[1mHTTP\x1b[0m server is running on port \x1b[34m\x1b[1m'+config.httpPort+'\x1b[0m');
     });
     // Instantiate the HTTPS server if exists config for it and SSL cert.
     if(config.httpsPort && config.ssl){
@@ -145,7 +145,7 @@ server.init = function(config){
 
       // Start the HTTPS server
       server.httpsServer.listen(config.httpsPort,function(){
-       debug('The \x1b[31m\x1b[1mHTTPS\x1b[0m server is running on port \x1b[34m\x1b[1m'+config.httpsPort+'\x1b[0m');
+       console.log('The \x1b[31m\x1b[1mHTTPS\x1b[0m server is running on port \x1b[34m\x1b[1m'+config.httpsPort+'\x1b[0m');
       });
     }
   }
