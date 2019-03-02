@@ -78,13 +78,19 @@ cli.responders.help = function(){
     'man' : 'Show this help page',
     'help' : 'Alias of the "man" command',
     'stats' : 'Get statistics on the underlying operating system and resource utilization',
-    'List users' : 'Show a list of all the registered (undeleted) users in the system',
-    'More user info --{userId}' : 'Show details of a specified user',
-    'List checks --up --down' : 'Show a list of all the active checks in the system, including their state. The "--up" and "--down flags are both optional."',
-    'More check info --{checkId}' : 'Show details of a specified check',
-    'List logs' : 'Show a list of all the log files available to be read (compressed and uncompressed)',
-    'More log info --{logFileName}' : 'Show details of a specified log file',
+    'List users' : 'Show a list of all the registered users in the last 24hs',
+    'More user info -{userId}' : 'Show details of a specified user',
+    'List orders' : 'Show a list of all orders checks in the last 24hs',
+    'More order info -{userId} -{date}' : 'Show details of a specified check',
+    'List menus' : 'Show a list of all menu\'s items'
   };
+  var margin = 0;
+  Object.keys(commands).forEach(k =>{
+    if(k.length > margin) margin = k.length;
+  })
+  margin += 2;
+  
+
 
   // Show a header for the help page that is as wide as the screen
   cli.horizontalLine();
@@ -96,14 +102,13 @@ cli.responders.help = function(){
   for(var key in commands){
      if(commands.hasOwnProperty(key)){
         var value = commands[key];
-        var line = '      \x1b[33m '+key+'      \x1b[0m';
-        var padding = 60 - line.length;
+        var line = '      \x1b[35m '+key+' \x1b[0m';
+        var padding = margin - key.length;
         for (i = 0; i < padding; i++) {
             line+=' ';
         }
         line+=value;
         console.log(line);
-        cli.verticalSpace();
      }
   }
   cli.verticalSpace(1);
@@ -180,19 +185,23 @@ cli.responders.stats = function(){
   cli.centered('SYSTEM STATISTICS');
   cli.horizontalLine();
   cli.verticalSpace(2);
-
+  var margin = 0;
+  Object.keys(stats).forEach(k =>{
+    if(k.length > margin) margin = k.length;
+  })
+  margin += 2;
   // Log out each stat
   for(var key in stats){
      if(stats.hasOwnProperty(key)){
         var value = stats[key];
-        var line = '      \x1b[33m '+key+'      \x1b[0m';
-        var padding = 60 - line.length;
+        var line = '      \x1b[33m '+key+'  \x1b[0m';
+        var padding = margin - key.length;
         for (i = 0; i < padding; i++) {
             line+=' ';
         }
         line+=value;
         console.log(line);
-        cli.verticalSpace();
+        
      }
   }
 
@@ -340,12 +349,11 @@ cli.processInput = function(str){
       'help',
       'exit',
       'stats',
+      'list menu',
+      'list orders',
+      'more order info',
       'list users',
-      'more user info',
-      'list checks',
-      'more check info',
-      'list logs',
-      'more log info'
+      'more user info'
     ];
 
     // Go through the possible inputs, emit event when a match is found
@@ -373,12 +381,12 @@ cli.init = function(){
 
   
   console.log('The \x1b[33m\x1b[1mCLI\x1b[0m is running\x1b[0m');
-  return;
+
   // Start the interface
   var _interface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: ''
+    prompt: '\x1b[31m\x1b[1m>>\x1b[0m '
   });
 
   // Create an initial prompt
