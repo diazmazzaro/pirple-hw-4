@@ -57,6 +57,7 @@ users.post = function(data,callback){
             'email' : email,
             'address' : address,
             'hashedPassword' : hashedPassword,
+            'signIn' : Date.now(),
             'tosAgreement' : true
           };
 

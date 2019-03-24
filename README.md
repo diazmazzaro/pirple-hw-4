@@ -1,20 +1,20 @@
-# pirple-hw-4
+# pirple-hw-4 ![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/public/logo-min.png?raw=true "landing") 
 
 Pirple Homework Assignment #4
 ***
 # Summary
 ### Landing page
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/2.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/2.png?raw=true "landing")
 ### Sign In
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/3.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/3.png?raw=true "landing")
 ### Login
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/4.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/4.png?raw=true "landing")
 ### Orders history
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/5.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/5.png?raw=true "landing")
 ### Book an order
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/6.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/6.png?raw=true "landing")
 ### Checkout
-![alt text](https://github.com/diazmazzaro/pirple-hw-3/blob/master/docs/7.png?raw=true "landing")
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/7.png?raw=true "landing")
 
 ***
 # API

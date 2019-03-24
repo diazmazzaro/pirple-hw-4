@@ -110,6 +110,7 @@ orders.post = function(data,callback){
 			        	orderObject = data
 			        }
 
+              itemObject.id = utils.createRandomString(23);
 			        // Add item to orders arrary
 			        orderObject.orders.push(itemObject)
 

@@ -14,7 +14,7 @@ var v8       = require('v8');
 var fileDB   = require('./file-db');
 var utils    = require('./utils');
 
-//var _data   = require('./data');
+//var fileDB   = require('./data');
 //var _logs   = require('./logs');
 //var helpers = require('./helpers');
 
@@ -49,20 +49,20 @@ e.on('more user info',function(str){
   cli.responders.moreUserInfo(str);
 });
 
-e.on('list checks',function(str){
-  cli.responders.listChecks(str);
+e.on('list orders',function(str){
+  cli.responders.listOrders(str);
 });
 
-e.on('more check info',function(str){
-  cli.responders.moreCheckInfo(str);
+e.on('more order info',function(str){
+  cli.responders.moreOrderInfo(str);
 });
 
-e.on('list logs',function(str){
-  cli.responders.listLogs();
+e.on('list signins',function(str){
+  cli.responders.listSignins();
 });
 
-e.on('more log info',function(str){
-  cli.responders.moreLogInfo(str);
+e.on('find user',function(str){
+  cli.responders.moreUserInfo(str);
 });
 
 
@@ -79,10 +79,11 @@ cli.responders.help = function(){
     'help' : 'Alias of the "man" command',
     'stats' : 'Get statistics on the underlying operating system and resource utilization',
     'List users' : 'Show a list of all the registered users in the last 24hs',
-    'More user info -{userId}' : 'Show details of a specified user',
+    'More user info --{userId}' : 'Show details of a specified user',
     'List orders' : 'Show a list of all orders checks in the last 24hs',
-    'More order info -{userId} -{date}' : 'Show details of a specified check',
-    'List menus' : 'Show a list of all menu\'s items'
+    'More order info --{orderId}' : 'Show details of a specified check',
+    'List menus' : 'Show a list of all menu\'s items',
+    'List signins' : 'Show a list of all users\'s signins'
   };
   var margin = 0;
   Object.keys(commands).forEach(k =>{
@@ -211,19 +212,113 @@ cli.responders.stats = function(){
 
 };
 
+// List Orders
+cli.responders.listOrders = function(){
+  fileDB.list('orders',function(err,orders){
+    if(!err && orders && orders.length > 0){
+      
+      orders.forEach(function(userId){
+        fileDB.read('orders',userId,function(err,orderData){
+          if(!err && orderData){
+            var orders24h = []
+            orderData.orders.forEach(function(order){
+              if(order.purchaseDate && (Date.now() - order.purchaseDate) < (3600 * 24 * 1000)){
+                order.date = new Date(order.purchaseDate);
+                order.email = orderData.email;
+                orders24h.push(order)
+              }
+            });
+            orders24h.forEach(function(order){
+              var line = 'Id: ' + order.id +' menuId: ' + order.menuId + ' Purchase Date:' + order.date;
+              console.log(line);
+            });
+
+            // var line = 'Id:'+ userData.email.replace('@','_') + ' email:'+ userData.email + ' Name: '+userData.firstName+' '+userData.lastName+' Phone: '+userData.phone+' Checks: ';
+            // var numberOfChecks = typeof(userData.checks) == 'object' && userData.checks instanceof Array && userData.checks.length > 0 ? userData.checks.length : 0;
+            // line+=numberOfChecks;
+            // console.log(line);
+            //cli.verticalSpace();
+          }
+        });
+
+      });
+    }
+  });
+}
+
+// More check info
+cli.responders.moreOrderInfo = function(str){
+  // Get ID from string
+  var arr = str.split('--');
+  var orderId = typeof(arr[1]) == 'string' && arr[1].trim().length > 0 ? arr[1].trim() : false;
+  if(orderId){
+    fileDB.list('orders',function(err,orders){
+      if(!err && orders && orders.length > 0){
+        
+        orders.forEach(function(userId){
+          fileDB.read('orders',userId,function(err,orderData){
+            if(!err && orderData){
+              var orders24h = []
+              orderData.orders.forEach(function(order){
+                if(order.id == orderId){
+                  order.date = new Date(order.purchaseDate);
+                  order.email = orderData.email;
+                  orders24h.push(order)
+                }
+              });
+              orders24h.forEach(function(order){
+                cli.verticalSpace();
+                console.dir(order,{'colors' : true});
+              });
+
+              // var line = 'Id:'+ userData.email.replace('@','_') + ' email:'+ userData.email + ' Name: '+userData.firstName+' '+userData.lastName+' Phone: '+userData.phone+' Checks: ';
+              // var numberOfChecks = typeof(userData.checks) == 'object' && userData.checks instanceof Array && userData.checks.length > 0 ? userData.checks.length : 0;
+              // line+=numberOfChecks;
+              // console.log(line);
+              //cli.verticalSpace();
+            }
+          });
+
+        });
+      }
+    });
+  }
+}
+
 // List Users
 cli.responders.listUsers = function(){
-  _data.list('users',function(err,userIds){
+  fileDB.list('users',function(err,userIds){
     if(!err && userIds && userIds.length > 0){
       cli.verticalSpace();
       userIds.forEach(function(userId){
-        _data.read('users',userId,function(err,userData){
+        fileDB.read('users',userId,function(err,userData){
           if(!err && userData){
-            var line = 'Name: '+userData.firstName+' '+userData.lastName+' Phone: '+userData.phone+' Checks: ';
+            var line = 'Id:'+ userData.email.replace('@','_') + ' email:'+ userData.email + ' Name: '+userData.firstName+' '+userData.lastName+' Phone: '+userData.phone+' Checks: ';
             var numberOfChecks = typeof(userData.checks) == 'object' && userData.checks instanceof Array && userData.checks.length > 0 ? userData.checks.length : 0;
             line+=numberOfChecks;
             console.log(line);
-            cli.verticalSpace();
+            //cli.verticalSpace();
+          }
+        });
+      });
+    }
+  });
+};
+
+// List Signins
+cli.responders.listSignins = function(){
+  fileDB.list('users',function(err,userIds){
+    if(!err && userIds && userIds.length > 0){
+      cli.verticalSpace();
+      userIds.forEach(function(userId){
+        fileDB.read('users',userId,function(err,userData){
+          if(!err && userData){
+            if(userData.signIn && (userData.signIn - Date.now()) < (3600 * 24 * 1000)){
+              var line = 'Id:'+ userData.email.replace('@','_') + ' signIn:' + new Date(userData.signIn);
+              console.log(line);
+            }
+            
+            //cli.verticalSpace();
           }
         });
       });
@@ -237,8 +332,9 @@ cli.responders.moreUserInfo = function(str){
   var arr = str.split('--');
   var userId = typeof(arr[1]) == 'string' && arr[1].trim().length > 0 ? arr[1].trim() : false;
   if(userId){
+    userId = userId.replace('@', '_')
     // Lookup the user
-    _data.read('users',userId,function(err,userData){
+    fileDB.read('users',userId,function(err,userData){
       if(!err && userData){
         // Remove the hashed password
         delete userData.hashedPassword;
@@ -255,11 +351,11 @@ cli.responders.moreUserInfo = function(str){
 
 // List Checks
 cli.responders.listChecks = function(str){
-  _data.list('checks',function(err,checkIds){
+  fileDB.list('checks',function(err,checkIds){
     if(!err && checkIds && checkIds.length > 0){
       cli.verticalSpace();
       checkIds.forEach(function(checkId){
-        _data.read('checks',checkId,function(err,checkData){
+        fileDB.read('checks',checkId,function(err,checkData){
           if(!err && checkData){
             var includeCheck = false;
             var lowerString = str.toLowerCase();
@@ -287,7 +383,7 @@ cli.responders.moreCheckInfo = function(str){
   var checkId = typeof(arr[1]) == 'string' && arr[1].trim().length > 0 ? arr[1].trim() : false;
   if(checkId){
     // Lookup the user
-    _data.read('checks',checkId,function(err,checkData){
+    fileDB.read('checks',checkId,function(err,checkData){
       if(!err && checkData){
 
         // Print their JSON object with text highlighting
@@ -353,7 +449,9 @@ cli.processInput = function(str){
       'list orders',
       'more order info',
       'list users',
-      'more user info'
+      'more user info',
+      'list signins',
+      'find user'
     ];
 
     // Go through the possible inputs, emit event when a match is found
