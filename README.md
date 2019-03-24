@@ -277,3 +277,18 @@ Ex. Response
     }
 }
 ```
+
+***
+# CLI
+With the CLI you can access to same administrator capabilities:
+
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/101.png?raw=true "landing")
+
+* View all the current menu items
+* View all the recent orders in the system (orders placed in the last 24 hours)
+* Lookup the details of a specific order by order ID
+* View all the users who have signed up in the last 24 hours
+* Lookup the details of a specific user by email address
+
+![alt text](https://github.com/diazmazzaro/pirple-hw-4/blob/master/docs/102.png?raw=true "landing")
+Use __man__ command to list commands' help
